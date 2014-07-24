@@ -21,11 +21,12 @@
 class ceph::osd (
   $public_address  = $::ipaddress,
   $cluster_address = $::ipaddress,
+  $ceph_cluster
 ) {
 
   include 'ceph::package'
 
   ensure_packages( [ 'xfsprogs', 'parted' ] )
 
-  Package['ceph'] -> Ceph::Key <<| title == 'admin' |>>
+  Package['ceph'] -> Ceph::Key <<| title == 'admin' and tag == "$ceph_cluster" |>>
 }

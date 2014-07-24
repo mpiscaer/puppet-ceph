@@ -30,7 +30,8 @@
 define ceph::mon (
   $monitor_secret,
   $mon_port = 6789,
-  $mon_addr = $ipaddress
+  $mon_addr = $ipaddress,
+  $ceph_cluster
 ) {
 
   include 'ceph::package'
@@ -40,8 +41,9 @@ define ceph::mon (
   $mon_data_real = regsubst($::ceph::conf::mon_data, '\$id', $name)
 
   ceph::conf::mon { $name:
-    mon_addr => $mon_addr,
-    mon_port => $mon_port,
+    mon_addr     => $mon_addr,
+    mon_port     => $mon_port,
+    ceph_cluster => $ceph_cluster
   }
 
   #FIXME: monitor_secret will appear in "ps" output …

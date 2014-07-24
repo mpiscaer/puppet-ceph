@@ -30,6 +30,7 @@ define ceph::mds (
   $fsid,
   $auth_type = 'cephx',
   $mds_data = '/var/lib/ceph/mds',
+  $ceph_cluster
 ) {
 
   include 'ceph::package'
