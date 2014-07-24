@@ -11,7 +11,7 @@ define ceph::conf::osd (
 ) {
   validate_hash($config)
 
-  concat::fragment { "ceph-osd-${$ceph_cluster}-${name}.conf":
+  concat::fragment { "ceph-osd-${ceph_cluster}-${name}.conf":
     target  => '/etc/ceph/ceph.conf',
     order   => '80',
     content => template('ceph/ceph.conf-osd.erb'),

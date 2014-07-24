@@ -7,7 +7,7 @@ define ceph::conf::mds (
 ) {
   validate_hash($config)
 
-  @@concat::fragment { "ceph-mds-${$ceph_cluster}-${name}.conf":
+  @@concat::fragment { "ceph-mds-${ceph_cluster}-${name}.conf":
     target  => '/etc/ceph/ceph.conf',
     order   => '60',
     content => template('ceph/ceph.conf-mds.erb'),
