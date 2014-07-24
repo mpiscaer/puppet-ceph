@@ -33,13 +33,15 @@ class ceph::apt::ceph (
   }
 
   if ( true == $apt_use_static_key_content ) {
-    $apt_key_content = template('ceph/apt-gpg-key')
+    $real_apt_key_content = template('ceph/apt-gpg-key')
+  } else {
+    $real_apt_key_content = $apt_key_content
   }
 
   apt::key { 'ceph':
     key         => $apt_key_id,
     key_source  => $apt_key_source,
-    key_content => $apt_key_content
+    key_content => $real_apt_key_content
   }
 
   apt::source { 'ceph':
