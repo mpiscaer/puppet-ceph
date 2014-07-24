@@ -28,21 +28,21 @@ define ceph::osd::device (
   $devname = regsubst($name, '.*/', '')
 
   exec { "mktable_gpt_${devname}":
-    command => "parted -a optimal --script ${name} mktable gpt",
-    unless  => "parted --script ${name} print|grep -sq 'Partition Table: gpt'",
+    command => "/sbin/parted -a optimal --script ${name} mktable gpt",
+    unless  => "/sbin/parted --script ${name} print|grep -sq 'Partition Table: gpt'",
     require => Package['parted']
   }
 
   exec { "mkpart_${devname}":
-    command => "parted -a optimal -s ${name} mkpart ceph 0% 100%",
-    unless  => "parted ${name} print | egrep '^ 1.*ceph$'",
+    command => "/sbin/parted -a optimal -s ${name} mkpart ceph 0% 100%",
+    unless  => "/sbin/parted ${name} print | egrep '^ 1.*ceph$'",
     require => [Package['parted'], Exec["mktable_gpt_${devname}"]]
   }
 
   exec { "mkfs_${devname}":
-    command => "mkfs.xfs -f -d agcount=${::processorcount} -l \
+    command => "/sbin/mkfs.xfs -f -d agcount=${::processorcount} -l \
 size=1024m -n size=64k ${name}1",
-    unless  => "xfs_admin -l ${name}1",
+    unless  => "/usr/sbin/xfs_admin -l ${name}1",
     require => [Package['xfsprogs'], Exec["mkpart_${devname}"]],
   }
 
@@ -53,8 +53,8 @@ size=1024m -n size=64k ${name}1",
 
   if $blkid != 'undefined'  and defined( Ceph::Key['admin'] ){
     exec { "ceph_osd_create_${devname}":
-      command => "ceph osd create ${blkid}",
-      unless  => "ceph osd dump | grep -sq ${blkid}",
+      command => "/usr/bin/ceph osd create ${blkid}",
+      unless  => "/usr/bin/ceph osd dump | grep -sq ${blkid}",
       require => Ceph::Key['admin'],
     }
 
@@ -93,14 +93,14 @@ size=1024m -n size=64k ${name}1",
       }
 
       exec { "ceph-osd-mkfs-${osd_id}":
-        command => "ceph-osd -c /etc/ceph/ceph.conf \
+        command => "/usr/bin/ceph-osd -c /etc/ceph/ceph.conf \
 -i ${osd_id} \
 --mkfs \
 --mkkey \
 --osd-uuid ${blkid}
 ",
         creates => "${osd_data}/keyring",
-        unless  => "ceph auth list | egrep '^osd.${osd_id}$'",
+        unless  => "/usr/bin/ceph auth list | /bin/egrep '^osd.${osd_id}$'",
         require => [
           Mount[$osd_data],
           Concat['/etc/ceph/ceph.conf'],
@@ -109,9 +109,9 @@ size=1024m -n size=64k ${name}1",
 
       exec { "ceph-osd-register-${osd_id}":
         command => "\
-ceph auth add osd.${osd_id} osd 'allow *' mon 'allow rwx' \
+/usr/bin/ceph auth add osd.${osd_id} osd 'allow *' mon 'allow rwx' \
 -i ${osd_data}/keyring",
-        unless  => "ceph auth list | egrep '^osd.${osd_id}$'",
+        unless  => "/usr/bin/ceph auth list | egrep '^osd.${osd_id}$'",
         require => Exec["ceph-osd-mkfs-${osd_id}"],
       }
 
