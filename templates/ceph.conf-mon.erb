@@ -1,5 +1,5 @@
 [mon.<%= @name %>]
-  host = <%= @hostname %>
+  host = <%= @ceph_hostname %>
   mon addr = <%= @mon_addr %>:<%= @mon_port %>
 <% @config.sort.each do |key, value| -%>
   <%= key %> = <%= value %>

@@ -63,7 +63,7 @@ class ceph::conf (
     require => Package['ceph'],
   }
 
-  Concat::Fragment <<| target == '/etc/ceph/ceph.conf' and tag == "$ceph_cluster" |>>
+  Ceph::Conf::Apply <<| ceph_cluster == "${ceph_cluster}" |>>
 
   concat::fragment { 'ceph.conf':
     target  => '/etc/ceph/ceph.conf',

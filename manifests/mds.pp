@@ -36,11 +36,6 @@ define ceph::mds (
   include 'ceph::package'
   include 'ceph::params'
 
-  class { 'ceph::conf':
-    fsid      => $fsid,
-    auth_type => $auth_type,
-  }
-
   $mds_data_expanded = "${mds_data}/mds.${name}"
 
   file { $mds_data_expanded:
@@ -51,7 +46,7 @@ define ceph::mds (
   }
 
   exec { 'ceph-mds-keyring':
-    command =>"/usr/bin/ceph/ceph auth get-or-create mds.${name} mds 'allow ' osd 'allow *' mon 'allow rwx'",
+    command =>"/usr/bin/ceph auth get-or-create mds.${name} mds 'allow ' osd 'allow *' mon 'allow rwx'",
     creates => "/var/lib/ceph/mds/mds.${name}/keyring",
     before  => Service["ceph-mds.${name}"],
     require => Package['ceph'],
@@ -66,6 +61,6 @@ define ceph::mds (
     require  => Exec['ceph-mds-keyring'],
   }
 
-  Package['ceph'] -> Ceph::Key <<| title == 'admin' and tag == "$ceph_cluster" |>>
+  Package['ceph'] -> Ceph::Key <<| title == 'admin' and ceph_cluster == "$ceph_cluster" |>>
 
 }

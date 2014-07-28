@@ -6,12 +6,11 @@ define ceph::conf::osd (
   $public_addr  = undef,
   $journal = undef,
   $journalsize = undef,
-  $config = {},
-  $ceph_cluster
+  $config = {}
 ) {
   validate_hash($config)
 
-  concat::fragment { "ceph-osd-${ceph_cluster}-${name}.conf":
+  concat::fragment { "ceph-osd-${name}.conf":
     target  => '/etc/ceph/ceph.conf',
     order   => '80',
     content => template('ceph/ceph.conf-osd.erb'),

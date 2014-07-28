@@ -40,10 +40,12 @@ define ceph::mon (
 
   $mon_data_real = regsubst($::ceph::conf::mon_data, '\$id', $name)
 
-  ceph::conf::mon { $name:
-    mon_addr     => $mon_addr,
-    mon_port     => $mon_port,
-    ceph_cluster => $ceph_cluster
+  @@ceph::conf::apply { $name:
+    type          => 'mon',
+    mon_addr      => $mon_addr,
+    mon_port      => $mon_port,
+    ceph_cluster  => $ceph_cluster,
+    ceph_hostname => $hostname
   }
 
   #FIXME: monitor_secret will appear in "ps" output …
@@ -98,7 +100,7 @@ $(ceph --name mon. --keyring ${mon_data_real}/keyring \
     mds allow)",
     creates => '/etc/ceph/keyring',
     require => Package['ceph'],
-    onlyif  => "ceph --admin-daemon /var/run/ceph/ceph-mon.${name}.asok \
+    onlyif  => "/usr/bin/ceph --admin-daemon /var/run/ceph/ceph-mon.${name}.asok \
 mon_status|egrep -v '\"state\": \"(leader|peon)\"'",
   }
 

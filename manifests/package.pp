@@ -26,11 +26,31 @@ class ceph::package (
 
   #FIXME: Ensure ceph user/group
 
-  ensure_resource('file', ['/var/run/ceph', '/var/lib/ceph', '/var/lib/ceph/mon', '/var/lib/ceph/osd'], {
+  ensure_resource('file', ['/var/run/ceph'], {
     'ensure' => 'directory',
     'owner'  => 'root',
     'group'  => '0',
     'mode'   => '0755'
   })
 
+  ensure_resource('file', ['/var/lib/ceph'], {
+    'ensure' => 'directory',
+    'owner'  => 'root',
+    'group'  => '0',
+    'mode'   => '0755'
+  })
+
+  ensure_resource('file', ['/var/lib/ceph/mon'], {
+    'ensure' => 'directory',
+    'owner'  => 'root',
+    'group'  => '0',
+    'mode'   => '0755'
+  })
+
+  ensure_resource('file', ['/var/lib/ceph/osd'], {
+    'ensure' => 'directory',
+    'owner'  => 'root',
+    'group'  => '0',
+    'mode'   => '0755'
+  })
 }

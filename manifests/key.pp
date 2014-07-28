@@ -3,6 +3,7 @@
 define ceph::key (
   $secret       = undef,
   $keyring_path = "/var/lib/ceph/tmp/${name}.keyring",
+  $ceph_cluster
 ) {
 
   exec { "ceph-key-${name}":
@@ -10,5 +11,4 @@ define ceph::key (
     creates => $keyring_path,
     require => Package['ceph'],
   }
-
 }

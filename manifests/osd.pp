@@ -28,5 +28,7 @@ class ceph::osd (
 
   ensure_packages( [ 'xfsprogs', 'parted' ] )
 
-  Package['ceph'] -> Ceph::Key <<| title == 'admin' and tag == "$ceph_cluster" |>>
+  Package['ceph'] -> Ceph::Key <<| title == 'admin' and ceph_cluster == "$ceph_cluster" |>>
+
 }
+
