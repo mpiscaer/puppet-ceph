@@ -9,8 +9,8 @@ define ceph::conf::apply (
 ) {
 
   case $type {
-    mon: 
-      {   
+    mon:
+      {
         if ($mon_addr == undef) {
           fail('mon_addr is not declared')
         }
@@ -31,7 +31,7 @@ define ceph::conf::apply (
         ceph::conf::mds { "$name":
           ceph_cluster   => "$cluster_name",
           ceph_hostname  => $ceph_hostname
-        }          
+        }
       }
     default: { fail("type parameter not reconsized, only mon or mds") }
   }

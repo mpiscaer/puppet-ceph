@@ -46,7 +46,7 @@ define ceph::mds (
   }
 
   exec { 'ceph-mds-keyring':
-    command =>"/usr/bin/ceph auth get-or-create mds.${name} mds 'allow ' osd 'allow *' mon 'allow rwx'",
+    command =>"/usr/bin/ceph auth get-or-create mds.${name} mds 'allow ' osd 'allow *' mon 'allow rwx' -o /var/lib/ceph/mds/mds.${name}/keyring",
     creates => "/var/lib/ceph/mds/mds.${name}/keyring",
     before  => Service["ceph-mds.${name}"],
     require => Package['ceph'],
