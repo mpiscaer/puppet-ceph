@@ -21,7 +21,7 @@
 #
 # == Authors
 #
-#  François Charlier francois.charlier@enovance.com
+#  Francois Charlier francois.charlier@enovance.com
 #
 # == Copyright
 #
@@ -48,7 +48,7 @@ define ceph::mon (
     ceph_hostname => $hostname
   }
 
-  #FIXME: monitor_secret will appear in "ps" output …
+  #FIXME: monitor_secret will appear in "ps" output ...
   exec { 'ceph-mon-keyring':
     command => "/usr/bin/ceph-authtool /var/lib/ceph/tmp/keyring.mon.${name} \
 --create-keyring \
@@ -99,8 +99,8 @@ $(ceph --name mon. --keyring ${mon_data_real}/keyring \
     osd 'allow *' \
     mds allow)",
     creates => '/etc/ceph/keyring',
-    require => Package['ceph'],
-    onlyif  => "/usr/bin/ceph --admin-daemon /var/run/ceph/ceph-mon.${name}.asok \
+    require => [Package['ceph'], Service["ceph-mon.${name}"]],
+    onlyif  => "ceph --admin-daemon /var/run/ceph/ceph-mon.${name}.asok \
 mon_status|egrep -v '\"state\": \"(leader|peon)\"'",
   }
 

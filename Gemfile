@@ -2,10 +2,11 @@ source "https://rubygems.org"
 
 group :development, :test do
   gem 'puppetlabs_spec_helper', :require => false
-  gem 'puppet-lint', '~> 0.3.2'
-  gem 'rake', '10.1.0'
-  gem 'rspec', '< 2.99'
+  gem 'rspec-puppet', '~> 2.0.0', :require => false
+  gem 'puppet-lint-param-docs'
+  gem 'metadata-json-lint'
   gem 'puppet-syntax'
+  gem 'puppet-lint'
 end
 
 if puppetversion = ENV['PUPPET_VERSION']

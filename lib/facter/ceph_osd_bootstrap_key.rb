@@ -10,8 +10,8 @@
 require 'facter'
 require 'timeout'
 
-timeout = 2
-cmd_timeout = 2
+timeout = 10
+cmd_timeout = 10
 
 # ceph_osd_bootstrap_key
 # Fact that gets the ceph key "client.bootstrap-osd"
@@ -48,7 +48,7 @@ end
 
 blkid = Facter::Util::Resolution.exec("blkid")
 blkid and blkid.each_line do |line|
-  if line =~ /^\/dev\/(.+):.*UUID="([a-fA-F0-9\-]+)"/
+  if line =~ /^\/dev\/(.+):\s*UUID="([a-fA-F0-9\-]+)"/
     device = $1
     uuid = $2
 

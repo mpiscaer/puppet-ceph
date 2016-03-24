@@ -1,3 +1,5 @@
+# This file is managed by Puppet
+# Please do not edit
 [global]
 <% if @auth_type -%>
   auth cluster required = <%= @auth_type %>
@@ -55,6 +57,11 @@
   osd journal = <%= @osd_journal_real %>
   osd mkfs type = xfs
   keyring = <%= @osd_data %>/keyring
+
+  # reduce recovery priority (less CPU impact)
+  osd recovery max active = <%= @osd_recovery_max_active %>
+  osd max backfills = <%= @osd_max_backfills %>
+  osd recovery op priority = <%= @osd_recovery_op_priority %>
 
 [mds]
   mds data = <%= @mds_data %>

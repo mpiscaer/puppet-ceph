@@ -9,7 +9,7 @@
 #
 # == Authors
 #
-#  François Charlier francois.charlier@enovance.com
+#  Francois Charlier francois.charlier@enovance.com
 #
 # == Copyright
 #
@@ -40,15 +40,14 @@ define ceph::osd::device (
   }
 
   exec { "mkfs_${devname}":
-    command => "/sbin/mkfs.xfs -f -d agcount=${::processorcount} -l \
-size=1024m -n size=64k ${name}1",
-    unless  => "/usr/sbin/xfs_admin -l ${name}1",
+    command => "mkfs.xfs -f -i size=2048 ${name}1",
+    unless  => "xfs_admin -l ${name}1",
     require => [Package['xfsprogs'], Exec["mkpart_${devname}"]],
   }
 
   $blkid_uuid_fact = "blkid_uuid_${devname}1"
   notify { "BLKID FACT ${devname}: ${blkid_uuid_fact}": }
-  $blkid = inline_template('<%= scope.lookupvar(blkid_uuid_fact) or "undefined" %>')
+  $blkid = inline_template('<%= scope.lookupvar(@blkid_uuid_fact) or "undefined" %>')
   notify { "BLKID ${devname}: ${blkid}": }
 
   if $blkid != 'undefined'  and defined( Ceph::Key['admin'] ){
@@ -81,7 +80,7 @@ size=1024m -n size=64k ${name}1",
 
       mount { $osd_data:
         ensure  => mounted,
-        device  => "${name}1",
+        device  => "UUID=${blkid}",
         atboot  => true,
         fstype  => 'xfs',
         options => 'rw,noatime,inode64',

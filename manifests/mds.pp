@@ -18,14 +18,13 @@
 #
 # == Authors
 #
-#  Sébastien Han sebastien.han@enovance.com
-#  François Charlier francois.charlier@enovance.com
+#  Sebastien Han sebastien.han@enovance.com
+#  Francois Charlier francois.charlier@enovance.com
 #
 # == Copyright
 #
 # Copyright 2012 eNovance <licensing@enovance.com>
 #
-
 define ceph::mds (
   $fsid,
   $auth_type = 'cephx',
@@ -36,13 +35,20 @@ define ceph::mds (
   include 'ceph::package'
   include 'ceph::params'
 
+  if !defined(Class['ceph::conf']) {
+    class { 'ceph::conf':
+      fsid      => $fsid,
+      auth_type => $auth_type,
+    }
+  }
+
   $mds_data_expanded = "${mds_data}/mds.${name}"
 
   file { $mds_data_expanded:
-    ensure  => directory,
-    owner   => 'root',
-    group   => 0,
-    mode    => '0755',
+    ensure => directory,
+    owner  => 'root',
+    group  => 0,
+    mode   => '0755',
   }
 
   exec { 'ceph-mds-keyring':
